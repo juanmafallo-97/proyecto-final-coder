@@ -22,4 +22,36 @@ router.get("/:id?", async (req, res) => {
   }
 });
 
+router.post("/", async (req, res) => {
+  try {
+    const product = { timestamp: Date.now(), ...req.body };
+    const newProduct = await productsApi.save(product);
+    res.json({ success: "Producto creado exitosamente", newProduct });
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const product = req.body;
+    await productsApi.updateProduct(id, product);
+    const updatedProduct = await productsApi.getById(id);
+    res.json({ success: "Producto actualizado exitosamente", updatedProduct });
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    await productsApi.deleteById(id);
+    res.json({ success: `Producto con id ${id} eliminado exitosamente` });
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+});
+
 module.exports = router;

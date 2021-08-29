@@ -18,7 +18,7 @@ class ProductsApi {
       }
       parsedData.push({ ...product, id });
       await fs.promises.writeFile(this.fileName, JSON.stringify(parsedData));
-      return { ...product, id };
+      return { id, ...product };
     } catch (error) {
       throw new Error(
         "Ha ocurrido un error escribiendo los datos: " + error.message
@@ -89,11 +89,16 @@ class ProductsApi {
         "utf-8"
       );
       const parsedData = JSON.parse(fileData);
-      const newData = parsedData.filter((obj) => obj.id !== id);
-      await fs.promises.writeFile(
-        "./" + this.fileName,
-        JSON.stringify(newData)
-      );
+      const productToDelete = parsedData.find((product) => product.id === id);
+      if (productToDelete) {
+        const newData = parsedData.filter((product) => product.id !== id);
+        await fs.promises.writeFile(
+          "./" + this.fileName,
+          JSON.stringify(newData)
+        );
+      } else {
+        throw new Error("No se encontró el producto especificado");
+      }
     } catch (error) {
       throw new Error(
         "Ha ocurrido un error borrando el producto: " + error.message
