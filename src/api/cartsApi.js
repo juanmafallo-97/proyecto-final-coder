@@ -1,11 +1,13 @@
 const fs = require("fs");
+const ProductsApi = require("./productsApi");
 
-class ProductsApi {
+class CartsApi {
   constructor(fileName) {
     this.fileName = fileName;
+    this.productsApi = new ProductsApi("products.json");
   }
 
-  async save(product) {
+  async create() {
     let id;
     try {
       const fileData = await fs.promises.readFile(this.fileName, "utf-8");
@@ -13,12 +15,12 @@ class ProductsApi {
       // Si todavía no hay ningún elemento asignamos el id 1
       if (!parsedData.length) id = 1;
       else {
-        //Si no toma el id del ultimo elemento y le sumamos 1
+        //Si no, toma el id del ultimo elemento y le sumamos 1
         id = parsedData[parsedData.length - 1].id + 1;
       }
-      parsedData.push({ ...product, id });
+      parsedData.push({ id, timestamp: Date.now(), productos: [] });
       await fs.promises.writeFile(this.fileName, JSON.stringify(parsedData));
-      return { id, ...product };
+      return id;
     } catch (error) {
       throw new Error(
         "Ha ocurrido un error escribiendo los datos: " + error.message
@@ -43,13 +45,39 @@ class ProductsApi {
     }
   }
 
-  async getAll() {
+  async deleteById(id) {
     try {
       const fileData = await fs.promises.readFile(
         "./" + this.fileName,
         "utf-8"
       );
-      return JSON.parse(fileData);
+      const cartToDelete = JSON.parse(fileData).find((cart) => cart.id === id);
+      if (cartToDelete) {
+        const newData = parsedData.filter((cart) => cart.id !== id);
+        await fs.promises.writeFile(
+          "./" + this.fileName,
+          JSON.stringify(newData)
+        );
+      } else {
+        throw new Error("No se encontró el carrito a eliminar");
+      }
+    } catch (error) {
+      throw new Error(
+        "Ha ocurrido un error borrando el carrito: " + error.message
+      );
+    }
+  }
+
+  async getCartProducts(id) {
+    try {
+      const fileData = await fs.promises.readFile(
+        "./" + this.fileName,
+        "utf-8"
+      );
+      const cart = JSON.parse(fileData).find((cart) => cart.id === id);
+      if (cart) {
+        return cart.productos;
+      } else throw new Error("El carrito buscado no existe");
     } catch (error) {
       throw new Error(
         "Ha ocurrido un error obteniendo los datos: " + error.message
@@ -57,54 +85,28 @@ class ProductsApi {
     }
   }
 
-  async updateProduct(id, updatedProduct) {
+  async addProductToCart(cartId, productId) {
     try {
       const fileData = await fs.promises.readFile(
         "./" + this.fileName,
         "utf-8"
       );
       const parsedData = JSON.parse(fileData);
-      const newData = parsedData.map((product) => {
-        if (product.id === id) {
-          return { ...updatedProduct, id: product.id };
-        } else {
-          return product;
-        }
-      });
-      await fs.promises.writeFile(
-        "./" + this.fileName,
-        JSON.stringify(newData)
-      );
-    } catch (error) {
-      throw new Error(
-        "Ha ocurrido un error actualizando el producto:" + error.message
-      );
-    }
-  }
-
-  async deleteById(id) {
-    try {
-      const fileData = await fs.promises.readFile(
-        "./" + this.fileName,
-        "utf-8"
-      );
-      const parsedData = JSON.parse(fileData);
-      const productToDelete = parsedData.find((product) => product.id === id);
-      if (productToDelete) {
-        const newData = parsedData.filter((product) => product.id !== id);
+      const cart = parsedData.find((cart) => cart.id === cartId);
+      if (cart) {
+        const product = await this.productsApi.getById(productId);
+        cart.productos.push({ ...product });
         await fs.promises.writeFile(
           "./" + this.fileName,
-          JSON.stringify(newData)
+          JSON.stringify(parsedData)
         );
-      } else {
-        throw new Error("No se encontró el producto especificado");
-      }
+      } else throw new Error("El carrito especificado no existe");
     } catch (error) {
       throw new Error(
-        "Ha ocurrido un error borrando el producto: " + error.message
+        "Ha ocurrido un error añadiendo el producto: " + error.message
       );
     }
   }
 }
 
-module.exports = ProductsApi;
+module.exports = CartsApi;

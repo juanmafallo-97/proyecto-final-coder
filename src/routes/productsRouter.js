@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const ProductsApi = require("../api/products.js");
+const ProductsApi = require("../api/productsApi.js");
 
 const productsApi = new ProductsApi("products.json");
 
@@ -24,7 +24,7 @@ router.get("/:id?", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const product = { timestamp: Date.now(), ...req.body };
+    const product = req.body;
     const newProduct = await productsApi.save(product);
     res.json({ success: "Producto creado exitosamente", newProduct });
   } catch (err) {
