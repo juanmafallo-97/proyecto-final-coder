@@ -8,16 +8,16 @@ router.get("/:id?", async (req, res) => {
     try {
       const id = Number(req.params.id);
       const product = await productsApi.getById(id);
-      res.json(product);
+      res.json({ error: false, data: product });
     } catch (err) {
-      res.json({ error: err.message });
+      res.json({ error: true, message: err.message });
     }
   } else {
     try {
       const products = await productsApi.getAll();
-      res.json(products);
+      res.json({ error: false, data: products });
     } catch (err) {
-      res.json({ error: err.message });
+      res.json({ error: true, message: err.message });
     }
   }
 });
@@ -26,9 +26,9 @@ router.post("/", async (req, res) => {
   try {
     const product = req.body;
     const newProduct = await productsApi.save(product);
-    res.json({ success: "Producto creado exitosamente", newProduct });
+    res.json({ error: false, data: newProduct });
   } catch (err) {
-    res.json({ error: err.message });
+    res.json({ error: true, message: err.message });
   }
 });
 
@@ -38,9 +38,9 @@ router.put("/:id", async (req, res) => {
     const product = req.body;
     await productsApi.updateProduct(id, product);
     const updatedProduct = await productsApi.getById(id);
-    res.json({ success: "Producto actualizado exitosamente", updatedProduct });
+    res.json({ error: false, data: updatedProduct });
   } catch (err) {
-    res.json({ error: err.message });
+    res.json({ error: true, message: err.message });
   }
 });
 
@@ -48,9 +48,9 @@ router.delete("/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
     await productsApi.deleteById(id);
-    res.json({ success: `Producto con id ${id} eliminado exitosamente` });
+    res.json({ error: false, message: "Producto eliminado exitosamente" });
   } catch (err) {
-    res.json({ error: err.message });
+    res.json({ error: true, message: err.message });
   }
 });
 

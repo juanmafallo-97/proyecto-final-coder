@@ -28,30 +28,14 @@ class CartsApi {
     }
   }
 
-  async getById(id) {
-    try {
-      const fileData = await fs.promises.readFile(
-        "./" + this.fileName,
-        "utf-8"
-      );
-      const object = JSON.parse(fileData).filter((obj) => obj.id === id);
-      if (object.length) return object[0];
-      // Si el array que obtenemos con el filter está vacío, devolvemos el error
-      throw new Error("No se encuentra el producto especificado");
-    } catch (error) {
-      throw new Error(
-        "Ha ocurrido un error obteniendo los datos: " + error.message
-      );
-    }
-  }
-
   async deleteById(id) {
     try {
       const fileData = await fs.promises.readFile(
         "./" + this.fileName,
         "utf-8"
       );
-      const cartToDelete = JSON.parse(fileData).find((cart) => cart.id === id);
+      const parsedData = JSON.parse(fileData);
+      const cartToDelete = parsedData.find((cart) => cart.id === id);
       if (cartToDelete) {
         const newData = parsedData.filter((cart) => cart.id !== id);
         await fs.promises.writeFile(
@@ -104,6 +88,38 @@ class CartsApi {
     } catch (error) {
       throw new Error(
         "Ha ocurrido un error añadiendo el producto: " + error.message
+      );
+    }
+  }
+
+  async deleteCartProduct(cartId, productId) {
+    try {
+      const fileData = await fs.promises.readFile(
+        "./" + this.fileName,
+        "utf-8"
+      );
+      const parsedData = JSON.parse(fileData);
+      const cart = parsedData.find((cart) => cart.id === cartId);
+      if (cart) {
+        const productToDelete = cart.productos.find(
+          (product) => product.id === productId
+        );
+        if (productToDelete) {
+          cart.productos = cart.productos.filter(
+            (product) => product.id !== productId
+          );
+          await fs.promises.writeFile(
+            "./" + this.fileName,
+            JSON.stringify(parsedData)
+          );
+        } else
+          throw new Error(
+            "El producto especificado no se encuentra en el carrito"
+          );
+      } else throw new Error("El carrito especificado no existe");
+    } catch (error) {
+      throw new Error(
+        "Ha ocurrido un error eliminando el producto: " + error.message
       );
     }
   }
