@@ -26,7 +26,46 @@ const addProductToCart = async (req, res) => {
   }
 };
 
+const getCartProducts = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const cartProducts = await Cart.findOne({ _id: id }).populate("productos");
+    res.json({ error: false, data: cartProducts });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+};
+
+const deleteCart = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Cart.deleteOne({ _id: id });
+    res.json({ error: false, message: "Carrito eliminado exitosamente" });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+};
+
+const deleteCartProduct = async (req, res) => {
+  try {
+    const cartId = req.params.id;
+    const productId = req.params.id_prod;
+    await Cart.findByIdAndUpdate(cartId, {
+      $pull: { productos: productId }
+    });
+    res.json({
+      error: false,
+      message: "Producto eliminado del carrito exitosamente"
+    });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+};
+
 module.exports = {
   createCart,
-  addProductToCart
+  addProductToCart,
+  getCartProducts,
+  deleteCart,
+  deleteCartProduct
 };
