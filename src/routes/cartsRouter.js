@@ -1,9 +1,14 @@
 const router = require("express").Router();
-const CartsApi = require("../api/cartsApi");
+const cartController = require("../controllers/cartController");
+/* const CartsApi = require("../api/cartsApi");
 
-const cartsApi = new CartsApi("carts.json");
+const cartsApi = new CartsApi("carts.json"); */
 
-router.get("/:id/productos", async (req, res) => {
+router.post("/", cartController.createCart);
+
+router.post("/:id/productos", cartController.addProductToCart);
+
+/* router.get("/:id/productos", async (req, res) => {
   try {
     const id = Number(req.params.id);
     const cartProducts = await cartsApi.getCartProducts(id);
@@ -13,24 +18,7 @@ router.get("/:id/productos", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
-  try {
-    const newCartId = await cartsApi.create();
-    res.json({ error: false, data: newCartId });
-  } catch (err) {
-    res.json({ error: true, message: err.message });
-  }
-});
 
-router.post("/:id/productos", async (req, res) => {
-  try {
-    const cartId = Number(req.params.id);
-    await cartsApi.addProductToCart(cartId, req.body.productId);
-    res.json({ error: false, message: "Producto agregado exitosamente" });
-  } catch (err) {
-    res.json({ error: true, message: err.message });
-  }
-});
 
 router.delete("/:id", async (req, res) => {
   try {
@@ -55,5 +43,5 @@ router.delete("/:id/productos/:id_prod", async (req, res) => {
     res.json({ error: true, message: err.message });
   }
 });
-
+ */
 module.exports = router;
