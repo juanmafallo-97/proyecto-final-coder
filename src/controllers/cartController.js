@@ -1,10 +1,10 @@
 const Cart = require("../models/Cart");
+const cartsService = require("../services/cartsService");
 
 const createCart = async (req, res) => {
   try {
-    const cart = new Cart({ products: [] });
-    const newCart = await cart.save();
-    res.json({ error: false, id_carrito: newCart._id });
+    const newCartId = await cartsService.createCart();
+    res.json({ error: false, id_carrito: newCartId });
   } catch (err) {
     res.json({ error: true, message: err.message });
   }
@@ -14,12 +14,10 @@ const addProductToCart = async (req, res) => {
   try {
     if (!req.body.productId)
       throw new Error("Falta indicar el id del producto en el campo productId");
-    const cartId = req.params.id;
-    const productId = req.body.productId;
-    await Cart.updateOne({ _id: cartId }, { $push: { productos: productId } });
+    await cartsService.addProductToCart(req.params.id, req.body.productId);
     res.json({
       error: false,
-      message: "Producto agregado exitosamente al carrito"
+      message: "Producto agregado al carrito exitosamente"
     });
   } catch (err) {
     res.json({ error: true, message: err.message });
@@ -28,8 +26,7 @@ const addProductToCart = async (req, res) => {
 
 const getCartProducts = async (req, res) => {
   try {
-    const id = req.params.id;
-    const cartProducts = await Cart.findOne({ _id: id }).populate("productos");
+    const cartProducts = await cartsService.getCartProducts(req.params.id);
     res.json({ error: false, data: cartProducts });
   } catch (err) {
     res.json({ error: true, message: err.message });
@@ -38,8 +35,7 @@ const getCartProducts = async (req, res) => {
 
 const deleteCart = async (req, res) => {
   try {
-    const id = req.params.id;
-    await Cart.deleteOne({ _id: id });
+    await cartsService.deleteCart(req.params.id);
     res.json({ error: false, message: "Carrito eliminado exitosamente" });
   } catch (err) {
     res.json({ error: true, message: err.message });
@@ -48,11 +44,7 @@ const deleteCart = async (req, res) => {
 
 const deleteCartProduct = async (req, res) => {
   try {
-    const cartId = req.params.id;
-    const productId = req.params.id_prod;
-    await Cart.findByIdAndUpdate(cartId, {
-      $pull: { productos: productId }
-    });
+    await cartsService.deleteCartProduct(req.params.id, req.params.id_prod);
     res.json({
       error: false,
       message: "Producto eliminado del carrito exitosamente"
