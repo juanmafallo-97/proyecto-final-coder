@@ -1,4 +1,4 @@
-const Product = require("../models/Product");
+<<<<<<<< HEAD:src/controllers/productController.js
 const productsService = require("../services/productsService");
 
 const getProducts = async (req, res) => {
@@ -64,6 +64,15 @@ const deleteProduct = async (req, res) => {
     res.json({ error: true, message: err.message });
   }
 };
+========
+const router = require("express").Router();
+const productsController = require("../controllers/productController");
+
+router.get("/:id?", productsController.getProducts);
+router.post("/", productsController.saveProduct);
+router.put("/:id", productsController.updateProduct);
+router.delete("/:id", productsController.deleteProduct);
+>>>>>>>> b50da9d6756929098dec69fa9c60c97c94a4bab0:src/routes/productsRouter.js
 
 module.exports = {
   getProducts,

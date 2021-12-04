@@ -1,4 +1,3 @@
-const Cart = require("../models/Cart");
 const cartsService = require("../services/cartsService");
 
 const createCart = async (req, res) => {
