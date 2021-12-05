@@ -1,4 +1,3 @@
-<<<<<<<< HEAD:src/controllers/productController.js
 const productsService = require("../services/productsService");
 
 const getProducts = async (req, res) => {
@@ -26,7 +25,7 @@ const saveProduct = async (req, res) => {
     if (!isAuth)
       res.json({
         error: 401,
-        descripcion: `Ruta ${req.originalUrl}, método ${req.method} no autorizada`
+        descripcion: `Ruta ${req.originalUrl}, método ${req.method} no autorizada`,
       });
     const newProductId = await productsService.createProduct(req.body);
     res.json({ error: false, data: newProductId });
@@ -41,7 +40,7 @@ const updateProduct = async (req, res) => {
     if (!isAuth)
       res.json({
         error: 401,
-        descripcion: `Ruta ${req.originalUrl}, método ${req.method} no autorizada`
+        descripcion: `Ruta ${req.originalUrl}, método ${req.method} no autorizada`,
       });
     await productsService.updateProduct(req.params.id, req.body);
     res.json({ error: false, message: "Producto actualizado exitosamente" });
@@ -56,7 +55,7 @@ const deleteProduct = async (req, res) => {
     if (!isAuth)
       res.json({
         error: 401,
-        descripcion: `Ruta ${req.originalUrl}, método ${req.method} no autorizada`
+        descripcion: `Ruta ${req.originalUrl}, método ${req.method} no autorizada`,
       });
     await productsService.deleteProduct(req.params.id);
     res.json({ error: false, message: "Producto eliminado exitosamente" });
@@ -64,19 +63,10 @@ const deleteProduct = async (req, res) => {
     res.json({ error: true, message: err.message });
   }
 };
-========
-const router = require("express").Router();
-const productsController = require("../controllers/productController");
-
-router.get("/:id?", productsController.getProducts);
-router.post("/", productsController.saveProduct);
-router.put("/:id", productsController.updateProduct);
-router.delete("/:id", productsController.deleteProduct);
->>>>>>>> b50da9d6756929098dec69fa9c60c97c94a4bab0:src/routes/productsRouter.js
 
 module.exports = {
   getProducts,
   saveProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
 };

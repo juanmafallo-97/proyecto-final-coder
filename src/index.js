@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const cors = require("cors");
 const passport = require("./utils/passport");
 const router = require("./routes/index");
 require("./db");
@@ -10,17 +11,18 @@ const PORT = 8080;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use(
-    session({
-      cookie: {
-        maxAge: 600000
-      },
-      secret: "secreto",
-      rolling: true,
-      resave: true,
-      saveUninitialized: true
-    })
+  session({
+    cookie: {
+      maxAge: 600000
+    },
+    secret: "secreto",
+    rolling: true,
+    resave: true,
+    saveUninitialized: true
+  })
 );
 app.use(passport.initialize());
 app.use(passport.session());

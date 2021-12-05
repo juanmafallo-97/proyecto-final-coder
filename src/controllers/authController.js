@@ -22,8 +22,8 @@ const login = (req, res, next) => {
 
 const signup = async (req, res) => {
   try {
-    const userName = await authService.registerUser(req.body);
-    res.status(200).json({ error: null, data: userName });
+    const user = await authService.registerUser(req.body);
+    res.status(200).json({ error: null, user: user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
