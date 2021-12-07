@@ -3,6 +3,7 @@ const session = require("express-session");
 const cors = require("cors");
 const passport = require("./utils/passport");
 const router = require("./routes/index");
+const { logInfo } = require("./utils/logger");
 require("./db");
 
 const app = express();
@@ -29,4 +30,4 @@ app.use(passport.session());
 
 app.use("/", router);
 
-app.listen(PORT, () => console.log("Server activo en puerto " + PORT));
+app.listen(PORT, () => logInfo(`Server activo en puerto ${PORT}`));

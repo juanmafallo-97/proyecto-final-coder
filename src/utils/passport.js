@@ -2,12 +2,11 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 const { Strategy } = require("passport-local");
 const User = require("../models/User");
+const { logInfo } = require("./logger");
 
 const isValidPassword = (user, password) => {
   return bcrypt.compareSync(password, user.password);
 };
-
-const createHash = (password) => bcrypt.hashSync(password, 10, null);
 
 passport.use(
   "login",
@@ -15,11 +14,11 @@ passport.use(
     User.findOne({ email: username }, (err, user) => {
       if (err) return done(err);
       if (!user) {
-        console.log("Usuario no encontrado");
+        logInfo("Usuario no encontrado");
         return done(null, false);
       }
       if (!isValidPassword(user, password)) {
-        console.log("Contraseña incorrecta");
+        logInfo("Contraseña incorrecta");
         return done(null, false);
       }
       return done(null, user);

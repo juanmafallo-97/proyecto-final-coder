@@ -1,5 +1,6 @@
 const { createTransport } = require("nodemailer");
 const dotenv = require("dotenv");
+const { logInfo, logError } = require("./logger");
 
 dotenv.config();
 
@@ -25,9 +26,9 @@ const sendNewUserNotification = (userData) => {
 
   transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
-      console.log("Error: ", err);
+      logError(err);
     } else {
-      console.log("Email sent: ", info.response);
+      logInfo(`Email sent: ${info.response}`);
     }
   });
 };
@@ -48,9 +49,9 @@ const sendNewOrderNotification = (cartData) => {
 
   transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
-      console.log("Error: ", err);
+      logError(err);
     } else {
-      console.log("Email sent: ", info.response);
+      logInfo(`Email sent: ${info.response}`);
     }
   });
 };

@@ -1,4 +1,5 @@
 const twilio = require("twilio");
+const { logInfo, logError } = require("./logger");
 require("dotenv").config();
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -12,9 +13,9 @@ const sendWappOrderNotice = async (order) => {
       to: `whatsapp:${process.env.TWILIO_ADMIN_PHONE}`,
       body: `Nuevo pedido de ${order.user.name} (${order.user.email})`
     });
-    console.log(message);
+    logInfo(message);
   } catch (error) {
-    console.log(error);
+    logError(error);
   }
 };
 
@@ -25,9 +26,9 @@ const sendSmsOrderNotice = (order) => {
       to: `+${order.user.phone}`,
       body: `Hola ${order.user.name}, tu pedido se registró con éxito y se encuentra en proceso!`
     });
-    console.log(message);
+    logInfo(message);
   } catch (error) {
-    console.log(error);
+    logError(error);
   }
 };
 

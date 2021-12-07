@@ -63,7 +63,6 @@ const orderCart = async (cartId) => {
       { path: "productos" },
       { path: "user", model: "User", select: { _id: 0, password: 0 } }
     ]);
-    console.log(cart);
     sendNewOrderNotification(cart);
     sendWappOrderNotice(cart);
     sendSmsOrderNotice(cart);
