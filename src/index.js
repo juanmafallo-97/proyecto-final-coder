@@ -1,3 +1,5 @@
+const cluster = require("cluster");
+const { cpus } = require("os");
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
@@ -8,7 +10,7 @@ require("./db");
 
 const app = express();
 
-const PORT = 8080;
+const { port, mode } = require("./utils/minimist");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -30,4 +32,21 @@ app.use(passport.session());
 
 app.use("/", router);
 
-app.listen(PORT, () => logInfo(`Server activo en puerto ${PORT}`));
+/*   Cluster   */
+if (mode === "cluster" && cluster.isMaster) {
+  console.log("Modo:", mode);
+  for (let i = 0; i < cpus().length; i++) {
+    cluster.fork();
+    console.log(`CPU: ${i}`);
+  }
+  cluster.on("exit", (worker) => {
+    console.log(`El proceso ${worker.process.pid} terminó`);
+    cluster.fork();
+  });
+} else {
+  process.on("exit", (code) => {
+    console.log(`El proceso ${process.pid} terminó con código ${code}`);
+  });
+
+  app.listen(port, () => logInfo(`Server activo en puerto ${port}`));
+}
