@@ -16,7 +16,7 @@ const sendNewUserNotification = (userData) => {
   const mailOptions = {
     from: "Servidor Node.js",
     to: "l4b2ejr64bzv7ucr@ethereal.email",
-    subject: "Nuevo usuario registrado",
+    subject: "Nuevo registro",
     html: `<h1 style="color: blue;">Nuevo usuario registrado</h1>
         <p>Nombre: ${userData.name}</p>
         <p>Email: ${userData.email}</p>
@@ -32,4 +32,21 @@ const sendNewUserNotification = (userData) => {
   });
 };
 
-module.exports = { sendNewUserNotification };
+const sendNewOrderNotification = (cartData) => {
+  const mailOptions = {
+    from: "Servidor Node.js",
+    to: "l4b2ejr64bzv7ucr@ethereal.email",
+    subject: `Nuevo pedido de ${cartData.user.name} (${cartData.user.email})`,
+    html: `<h1 style="color: blue;">Nuevo pedido</h1>`
+  };
+
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.log("Error: ", err);
+    } else {
+      console.log("Email sent: ", info.response);
+    }
+  });
+};
+
+module.exports = { sendNewUserNotification, sendNewOrderNotification };

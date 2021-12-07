@@ -2,7 +2,8 @@ const cartsService = require("../services/cartsService");
 
 const createCart = async (req, res) => {
   try {
-    const newCartId = await cartsService.createCart();
+    const userId = req.body.user_id;
+    const newCartId = await cartsService.createCart(userId);
     res.json({ error: false, id_carrito: newCartId });
   } catch (err) {
     res.json({ error: true, message: err.message });
@@ -53,10 +54,23 @@ const deleteCartProduct = async (req, res) => {
   }
 };
 
+const orderCart = async (req, res) => {
+  try {
+    await cartsService.orderCart(req.params.id);
+    res.json({
+      error: false,
+      message: "Pedido registrado con éxito"
+    });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+};
+
 module.exports = {
   createCart,
   addProductToCart,
   getCartProducts,
   deleteCart,
-  deleteCartProduct
+  deleteCartProduct,
+  orderCart
 };

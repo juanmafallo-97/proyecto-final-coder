@@ -1,9 +1,10 @@
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
+const { sendNewOrderNotification } = require("../utils/nodemailer");
 
-const createCart = async () => {
+const createCart = async (userId) => {
   try {
-    const cart = new Cart();
+    const cart = new Cart({ user: userId });
     const newCart = await cart.save();
     return newCart._id;
   } catch (err) {
@@ -14,7 +15,7 @@ const createCart = async () => {
 const addProductToCart = async (cartId, productId) => {
   try {
     // Primero verificamos que el id del producto que se quiere agregar exista realmente en los productos
-    const product = await Product.findById(cartId);
+    const product = await Product.findById(productId);
     if (!product)
       throw new Error(`No existe ningún producto con el id ${productId}`);
     await Cart.updateOne({ _id: cartId }, { $push: { productos: productId } });
@@ -55,10 +56,24 @@ const deleteCartProduct = async (cartId, productId) => {
   }
 };
 
+const orderCart = async (cartId) => {
+  try {
+    const cart = await Cart.findById(cartId).populate([
+      { path: "productos" },
+      { path: "user", model: "User", select: { _id: 0, password: 0 } }
+    ]);
+    console.log(cart);
+    sendNewOrderNotification(cart);
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
 module.exports = {
   createCart,
   addProductToCart,
   getCartProducts,
   deleteCart,
-  deleteCartProduct
+  deleteCartProduct,
+  orderCart
 };
