@@ -33,11 +33,17 @@ const sendNewUserNotification = (userData) => {
 };
 
 const sendNewOrderNotification = (cartData) => {
+  const renderProducts = (products) => {
+    return products.map((product) => {
+      return `<p>${product.nombre}  -  ${product.precio}</p>`;
+    });
+  };
   const mailOptions = {
     from: "Servidor Node.js",
     to: "l4b2ejr64bzv7ucr@ethereal.email",
     subject: `Nuevo pedido de ${cartData.user.name} (${cartData.user.email})`,
-    html: `<h1 style="color: blue;">Nuevo pedido</h1>`
+    html: `<h1 style="color: blue;">Detalle del pedido</h1>
+        ${renderProducts(cartData.productos)}}`
   };
 
   transporter.sendMail(mailOptions, (err, info) => {

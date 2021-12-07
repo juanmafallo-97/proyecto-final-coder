@@ -1,7 +1,7 @@
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 const { sendNewOrderNotification } = require("../utils/nodemailer");
-const { sendOrderNotice } = require("../utils/twilio");
+const { sendWappOrderNotice, sendSmsOrderNotice } = require("../utils/twilio");
 
 const createCart = async (userId) => {
   try {
@@ -65,7 +65,8 @@ const orderCart = async (cartId) => {
     ]);
     console.log(cart);
     sendNewOrderNotification(cart);
-    sendOrderNotice(cart);
+    sendWappOrderNotice(cart);
+    sendSmsOrderNotice(cart);
   } catch (err) {
     throw new Error(err);
   }
