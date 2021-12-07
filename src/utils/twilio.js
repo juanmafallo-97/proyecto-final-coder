@@ -10,7 +10,7 @@ const sendWappOrderNotice = async (order) => {
   try {
     const message = await client.messages.create({
       from: "whatsapp:+14155238886",
-      to: `whatsapp:${process.env.TWILIO_ADMIN_PHONE}`,
+      to: `whatsapp:${process.env.ADMIN_PHONE}`,
       body: `Nuevo pedido de ${order.user.name} (${order.user.email})`
     });
     logInfo(message);
