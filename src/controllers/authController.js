@@ -29,4 +29,13 @@ const signup = async (req, res) => {
   }
 };
 
-module.exports = { login, signup };
+const logout = (req, res) => {
+  try {
+    req.logout();
+    res.status(200).json({ error: null, message: "Sesión cerrada con éxito" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { login, signup, logout };
