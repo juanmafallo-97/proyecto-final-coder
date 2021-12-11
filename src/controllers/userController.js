@@ -1,5 +1,5 @@
 const passport = require("../utils/passport");
-const authService = require("../services/authService");
+const userService = require("../services/userService");
 
 const login = (req, res, next) => {
   passport.authenticate("login", function (err, user) {
@@ -22,8 +22,11 @@ const login = (req, res, next) => {
 
 const signup = async (req, res) => {
   try {
-    const user = await authService.registerUser(req.body);
-    res.status(200).json({ error: null, user: user });
+    console.log(req.body);
+    const userData = req.body;
+    userData.avatar = "/uploads/" + req.body.avatarFilename;
+    const user = await userService.registerUser(userData);
+    res.status(200).json({ error: null, user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

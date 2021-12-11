@@ -1,9 +1,9 @@
 const router = require("express").Router();
 const apiRouter = require("./api");
-const authRouter = require("./authRouter");
+const userRouter = require("./userRouter");
 
 router.use("/api", apiRouter);
-router.use("/auth", authRouter);
+router.use("/users", userRouter);
 
 /* Ruta no implementada */
 router.get("*", (req, res) => {
@@ -11,7 +11,7 @@ router.get("*", (req, res) => {
   const method = req.method;
   res.json({
     error: 404,
-    descripcion: `Ruta ${url}, método ${method} no implementada`,
+    descripcion: `Ruta ${url}, método ${method} no implementada`
   });
 });
 
